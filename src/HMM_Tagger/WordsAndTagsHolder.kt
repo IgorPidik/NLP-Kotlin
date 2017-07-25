@@ -12,17 +12,19 @@ class WordsAndTagsHolder {
 
     private val tagWordCount = HashMap<Pair<String, String>, Int>()
     private val nGramArray = arrayOf(HashMap<String, Int>(), HashMap<Pair<String, String>, Int>(), HashMap<Triple<String, String, String>, Int>())
+    private val wordCount = HashMap<String, Int>()
 
     fun getEmissionProbability(word: String, tag: String): Double {
-        return getTagWordCount(tag, word)/get1GramHashMap().getOrDefault(tag, 0).toDouble()
+        return getTagWordCount(tag, word).toDouble() / get1GramHashMap().getOrDefault(tag, 0).toDouble()
     }
 
-    fun getQTrigram(tag1: String, tag2: String, tag3: String):Double {
-        return get3GramHashMap().getOrDefault(Triple(tag1, tag2, tag3), 0)/get2GramHashMap().getOrDefault(Pair(tag1, tag2), 0).toDouble()
+    fun getQTrigram(tag1: String, tag2: String, tag3: String): Double {
+        return get3GramHashMap().get(Triple(tag1, tag2, tag3))!!.toDouble() / get2GramHashMap().getOrDefault(Pair(tag1, tag2), 0).toDouble()
     }
 
     fun processCountFile(fileName: String) {
         File(fileName).forEachLine { processLine(it) }
+        processRareWords()
     }
 
     private fun processLine(line: String) {
@@ -43,12 +45,27 @@ class WordsAndTagsHolder {
     private fun processWordTag(data: List<String>) {
         val count = data[0].toInt()
         val tag = data[2]
-        var word = data[3]
+        val word = data[3]
 
-        if (count < 5) word = getRareWordCategory(word)
+        val prevWordCount = wordCount.getOrDefault(word, 0)
+        wordCount[word] = prevWordCount + count
+
         val key = Pair(tag, word)
-        tagWordCount[key] = count
+        val prevCount = tagWordCount.getOrDefault(key, 0)
+        tagWordCount[key] = prevCount + count
+    }
 
+    private fun processRareWords() {
+        val counts = wordCount.filter { it.value < 5 }
+        for (k in counts.keys) {
+            val category = getRareWordCategory(k)
+            for (tag in getTags()) {
+                val tagCount = tagWordCount.getOrDefault(Pair(tag, k), 0)
+                val prevTagCount = tagWordCount.getOrDefault(Pair(tag, category), 0)
+                tagWordCount[Pair(tag, category)] = tagCount + prevTagCount
+                tagWordCount.remove(Pair(tag, k))
+            }
+        }
     }
 
     private fun getRareWordCategory(word: String): String {
@@ -63,7 +80,9 @@ class WordsAndTagsHolder {
 
     private fun getTagWordCount(tag: String, word: String): Int {
         //return tag -> word count, if not in hashTable try return tag -> RareWordCategory, else return 0
-        return tagWordCount.getOrDefault(Pair(tag, word), tagWordCount.getOrDefault(Pair(tag, getRareWordCategory(word)), 0))
+        var w = word
+        if (wordCount.getOrDefault(word, 0) < 5) w = getRareWordCategory(word)
+        return tagWordCount.getOrDefault(Pair(tag, w), 0)
     }
 
     private fun processNGram(data: List<String>) {

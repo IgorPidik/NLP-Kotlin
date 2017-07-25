@@ -5,6 +5,5 @@
 fun main(args: Array<String>) {
     val hmm = HMM_Tagger()
     hmm.initCounts("gene.counts")
-    hmm.tagFile("gene.dev")
-
+    hmm.tagFile("gene.dev", "gene_dev_test.out")
 }
