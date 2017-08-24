@@ -1,4 +1,4 @@
-#Natural Language Processing for Kotlin
+Natural Language Processing for Kotlin
 ===================
 This project will contain several NLP algorithms, which I studied during Columbia University's MOOC on Coursera, written in Kotlin.
 
@@ -19,3 +19,17 @@ Probabilistic Context-Free Grammars
 A Probabilistic Context-Free Grammar (PCFG) is simply a Context-Free Grammar with probabilities assigned to the rules such that the sum of all probabilities for all rules expanding the same non-terminal is equal to one. 
 ![img](http://conglang.github.io/img/note_nlp_a_probabilistic_context_free_grammar.png)
 ![img](http://www.pling.org.uk/cs/com6791img/phrasestructuretree.png)
+
+
+Global linear models
+-----------------------------
+
+Global linear model for named-entity recognition using the perceptron algorithm. 
+
+**Contain three components**
+
+ - A feature function f mapping a pair (x,y) to a
+feature vector f(x,y)
+ - A generating function GEN enumerating all
+candidate outputs
+ - A parameter vector
