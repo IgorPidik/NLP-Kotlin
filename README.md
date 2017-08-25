@@ -3,8 +3,8 @@ Natural Language Processing for Kotlin
 This project will contain several NLP algorithms, which I studied during Columbia University's MOOC on Coursera, written in Kotlin.
 
  - Hidden Markov Models
- - Probabilistic Context-Free Grammars
- - Global linear models
+ - Probabilistic Context-Free Grammars (will be available soon)
+ - Global linear models (will be available soon)
 
 [Hidden Markov Models Tagger](https://github.com/IgorPidik/NLP-Kotlin/tree/master/src/HMM_Tagger)
 ----------------------------
